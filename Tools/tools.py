@@ -17,6 +17,6 @@ def search_tavily(query: str) -> str:
     response = tavily_search.run("LinkedIn profile " + query)
 
     if response and len(response["results"]) > 0:
-        return response["results"][0]
+        return response["results"]
     else:
         return "No results found."

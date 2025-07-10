@@ -1,3 +1,4 @@
+
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.prompts import PromptTemplate
 from langchain_core.tools import Tool
@@ -7,6 +8,7 @@ from langchain.agents import (
     AgentExecutor,
 )
 from langchain import hub
+
 
 
 def lookup(name: str) -> str:
@@ -33,8 +35,9 @@ def lookup(name: str) -> str:
         Tool(
             name="Crawl Google for linkedin profile",
             func=search_tavily,
-            description="Use this tool when you need to find the LinkedIn profile URL of a person by their name. "
-            + "The input should be the person's name, and the output will be the LinkedIn profile URL.",
+            description="""Use this tool when you need to find the LinkedIn profile URL of a person by their name.
+            The input should be the person's name, and the output will be a LinkedIn profile URL. Validate the URL before returning it.
+            If the URL found is not valid then find a valid URL.""",
         )
     ]
 
@@ -44,3 +47,9 @@ def lookup(name: str) -> str:
 
     result = agent_executor.invoke(input={"input": prompt.format(name=name)})
     return result["output"]
+
+
+if __name__ == "__main__":
+    name = "Elon Musk"
+    linkedin_url = lookup(name)
+    print(f"LinkedIn URL for {name}: {linkedin_url}")

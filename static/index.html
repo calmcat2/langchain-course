@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ice Breaker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #0056b3;
+            text-align: center;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        label {
+            font-weight: bold;
+        }
+        input[type="text"],
+        input[type="checkbox"] {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        input[type="checkbox"] {
+            width: auto;
+            margin-right: 10px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #response {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e9ecef;
+            border-radius: 8px;
+            border: 1px solid #ced4da;
+            display: none; /* Hidden by default */
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        #loadingMessage {
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: #007bff;
+            display: none; /* Hidden by default */
+        }
+        #response h2 {
+            color: #0056b3;
+            margin-top: 0;
+        }
+        #response ul {
+            list-style-type: disc;
+            padding-left: 20px;
+            text-align: left;
+            width: 100%;
+        }
+        #response li {
+            margin-bottom: 5px;
+        }
+        .error {
+            color: red;
+            margin-top: 10px;
+        }
+        #profilePicture {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 15px;
+            border: 3px solid #007bff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Ice Breaker</h1>
+        <form id="iceBreakerForm">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+
+            <div>
+                <input type="checkbox" id="mock" name="mock">
+                <label for="mock">Mock Data</label>
+            </div>
+
+            <button type="submit">Break the Ice!</button>
+        </form>
+
+        <div id="loadingMessage">Working on your request...</div>
+        <div id="response">
+            <h2>Results:</h2>
+            <img id="profilePicture" src="" alt="Profile Picture" style="display:none;">
+            <p id="summary"></p>
+            <h3>Interesting Facts:</h3>
+            <ul id="facts"></ul>
+        </div>
+        <p id="errorMessage" class="error"></p>
+    </div>
+
+    <script>
+        document.getElementById('iceBreakerForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+
+            const name = document.getElementById('name').value;
+            const mock = document.getElementById('mock').checked;
+            const errorMessage = document.getElementById('errorMessage');
+            const responseDiv = document.getElementById('response');
+            const loadingMessage = document.getElementById('loadingMessage');
+
+            errorMessage.textContent = ''; // Clear previous errors
+            responseDiv.style.display = 'none'; // Hide results
+            loadingMessage.style.display = 'block'; // Show loading message
+
+            const profilePicture = document.getElementById('profilePicture');
+            profilePicture.style.display = 'none'; // Hide picture by default
+            profilePicture.src = ''; // Clear previous picture
+
+            try {
+                const response = await fetch('/ice_breaker', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ name, mock }),
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.detail || 'Something went wrong!');
+                }
+
+                const data = await response.json();
+                document.getElementById('summary').textContent = data.summary;
+                const factsList = document.getElementById('facts');
+                factsList.innerHTML = '';
+                data.interesting_facts.forEach(fact => {
+                    const li = document.createElement('li');
+                    li.textContent = fact;
+                    factsList.appendChild(li);
+                });
+
+                if (data.picture_url) {
+                    profilePicture.src = data.picture_url;
+                    profilePicture.style.display = 'block';
+                }
+                responseDiv.style.display = 'flex'; // Show results
+            } catch (error) {
+                errorMessage.textContent = `Error: ${error.message}`;
+                document.getElementById('summary').textContent = '';
+                document.getElementById('facts').innerHTML = '';
+            } finally {
+                loadingMessage.style.display = 'none'; // Hide loading message
+            }
+        });
+    </script>
+</body>
+</html>
