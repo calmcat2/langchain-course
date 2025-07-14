@@ -1,1 +1,1 @@
-# Exploring the ReAct model. 
+# Exploring the RAG FAISS for local stores. 
