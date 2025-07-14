@@ -1,0 +1,10 @@
+[project]
+name = "ice-breaker"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "langchain-pinecone>=0.2.8",
+    "pinecone>=7.3.0",
+]
