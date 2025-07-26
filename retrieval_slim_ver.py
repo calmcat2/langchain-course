@@ -9,6 +9,7 @@ import os
 
 load_dotenv()
 
+
 def format_docs(docs):
     """Format the documents for the prompt."""
     return "\n\n".join([doc.page_content for doc in docs])
