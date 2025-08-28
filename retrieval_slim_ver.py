@@ -2,7 +2,6 @@ from dotenv import load_dotenv
 from langchain_google_genai import GoogleGenerativeAIEmbeddings, ChatGoogleGenerativeAI
 from langchain_pinecone import PineconeVectorStore
 from langchain_core.prompts import PromptTemplate
-from langchain import hub
 from langchain_core.runnables import RunnablePassthrough
 import os
 
