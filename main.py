@@ -1,10 +1,5 @@
-import os
-import sys
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.prompts import PromptTemplate
-
-# Add the project root to sys.path to resolve module imports
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 from Agents.linkedin_scraper import lookup
 from Third_parties.linkedin import get_linkedin_profile
