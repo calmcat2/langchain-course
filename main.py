@@ -1,4 +1,3 @@
-import os
 from dotenv import load_dotenv
 from langchain.tools import tool, Tool
 from langchain.prompts import PromptTemplate
@@ -100,4 +99,5 @@ if __name__ == "__main__":
             intermediate_steps.append((agent_step, str(observation)))
 
     if isinstance(agent_step, AgentFinish):
-        print(agent_step.return_values)
+        print("\n\nFinal Answer:")
+        print(agent_step.return_values["output"])
